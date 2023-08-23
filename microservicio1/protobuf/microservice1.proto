@@ -1,0 +1,14 @@
+syntax = 'proto3';
+
+message Search{
+    int32 request_service = 1;
+    string file_search = 2;
+}
+
+message Response{
+    string response = 1;
+}
+
+service SearchRequest{
+    rpc SearchR(Search) returns (Response) {}
+}
