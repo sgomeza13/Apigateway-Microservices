@@ -2,6 +2,7 @@ import express from 'express';
 import dotenv from 'dotenv';
 import grpc from '@grpc/grpc-js';
 import protoLoader from '@grpc/proto-loader';
+import amqp from 'amqplib'
 
 dotenv.config();
 //Definicionn de constantes para gRPC
@@ -26,12 +27,39 @@ const client = new SearchRequest(REMOTE_HOST, grpc.credentials.createInsecure())
 let request_service;
 let file_search;
 
+
+//Defininos y conectamos a rabbitmq
+
+
 app.get('/listfiles',(req, res)=>{
     console.info("Consumer service is started...");
     request_service = 1;
     client.SearchR({request_service:request_service},(err,data) => {
         if(err){
-            res.send(err)
+            //res.send(err)
+            amqp.connect('amqp://localhost', function(error0, connection) {
+            if (error0) {
+                throw error0;
+            }
+            connection.createChannel(function(error1, channel) {
+            if (error1) {
+                throw error1;
+            }
+            var queue = 'search';
+            var msg = 'Hello world';
+
+            channel.assertQueue(queue, {
+            durable: false
+            });
+
+            channel.sendToQueue(queue, Buffer.from(msg));
+            console.log(" [x] Sent %s", msg);
+            });
+        });
+        setTimeout(function() {
+            connection.close();
+            process.exit(0)
+            }, 500);
         }
         else{
             res.send(data)
