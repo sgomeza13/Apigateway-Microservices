@@ -36,31 +36,7 @@ app.get('/listfiles',(req, res)=>{
     request_service = 1;
     client.SearchR({request_service:request_service},(err,data) => {
         if(err){
-            //res.send(err)
-            amqp.connect('amqp://simon:password@18.214.11.58:5672', function(error0, connection) {
-                if (error0) {
-                    throw error0;
-                }
-                connection.createChannel(function(error1, channel) {
-                    if (error1) {
-                        throw error1;
-                    }
-            
-                    var queue = 'hello';
-                    var msg = 'Hello World!';
-            
-                    channel.assertQueue(queue, {
-                        durable: false
-                    });
-                    channel.sendToQueue(queue, Buffer.from(msg));
-            
-                    console.log(" [x] Sent %s", msg);
-                });
-                setTimeout(function() {
-                    connection.close();
-                    process.exit(0);
-                }, 500);
-            });
+            res.send(err)
         }
         else{
             res.send(data)
