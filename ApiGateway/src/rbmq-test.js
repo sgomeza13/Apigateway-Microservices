@@ -1,6 +1,13 @@
 import amqp from "amqplib/callback_api";
+import dotenv from 'dotenv';
+dotenv.config();
 
-amqp.connect('amqp://simon:password@18.214.11.58:5672', function(error0, connection) {
+const AMQP_CONNECT = process.env.AMQP_CONNECT;
+const queue = process.env.QUEUE;
+
+
+
+amqp.connect(AMQP_CONNECT, function(error0, connection) {
   if (error0) {
     throw error0;
   }
@@ -8,7 +15,7 @@ amqp.connect('amqp://simon:password@18.214.11.58:5672', function(error0, connect
     if (error1) {
       throw error1;
     }
-    var queue = 'rpc_queue';
+    //var queue = 'rpc_queue';
 
     channel.assertQueue(queue, {
       durable: false
@@ -31,6 +38,7 @@ amqp.connect('amqp://simon:password@18.214.11.58:5672', function(error0, connect
     });
   });
 });
+
 
 function fibonacci(n) {
   if (n == 0 || n == 1)
