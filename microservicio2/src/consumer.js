@@ -2,6 +2,8 @@ import amqp from "amqplib";
 import fs from 'fs';
 import { glob, globSync, globStream, globStreamSync, Glob } from 'glob'
 
+dotenv.config();
+
 
 const conn_uri = process.env.AMQP_CONNECT;
 const file_path = process.env.file_path;
@@ -13,7 +15,7 @@ connect()
 
 async function connect() {
   try {
-    const amqpServer = 'amqp://simon:password@18.214.11.58:5672'
+    const amqpServer = conn_uri;
     connection = await amqp.connect(amqpServer)
     channel = await connection.createChannel()
 
