@@ -1,5 +1,4 @@
-import amqp from 'amqplib'
-import amqp from "amqplib/callback_api";
+import amqp from "amqplib/callback_api.js";
 import dotenv from 'dotenv';
 import fs from 'fs';
 import { glob, globSync, globStream, globStreamSync, Glob } from 'glob'
@@ -8,11 +7,11 @@ import { glob, globSync, globStream, globStreamSync, Glob } from 'glob'
 dotenv.config();
 
 const AMQP_CONNECT = process.env.AMQP_CONNECT;
-const queue = process.env.QUEUE;
+const queue = "hello";
 
 
 
-amqp.connect(AMQP_CONNECT, function(error0, connection) {
+amqp.connect("amqp://simon:password@18.214.11.58:5672", function(error0, connection) {
   if (error0) {
     throw error0;
   }

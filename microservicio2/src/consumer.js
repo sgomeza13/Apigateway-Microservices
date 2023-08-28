@@ -1,15 +1,12 @@
 import amqp from "amqplib/callback_api";
 const AMQP_CONNECT = process.env.AMQP_CONNECT;
-const queue = process.env.QUEUE;
+const queue = "hello";
 
 //var args = process.argv.slice(2);
 
-if (args.length == 0) {
-  console.log("Usage: rpc_client.js num");
-  process.exit(1);
-}
 
-amqp.connect(AMQP_CONNECT, function(error0, connection) {
+
+amqp.connect("amqp://simon:password@18.214.11.58:5672", function(error0, connection) {
   if (error0) {
     throw error0;
   }
@@ -24,7 +21,7 @@ amqp.connect(AMQP_CONNECT, function(error0, connection) {
         throw error2;
       }
       var correlationId = generateUuid();
-      //var num = parseInt(args[0]);
+      var num = 9;
 
       console.log(' [x] Requesting listfiles');
 

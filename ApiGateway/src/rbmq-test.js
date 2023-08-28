@@ -1,4 +1,4 @@
-import amqp from "amqplib/callback_api";
+import amqp from "amqplib/callback_api.js";
 import dotenv from 'dotenv';
 dotenv.config();
 
@@ -7,7 +7,7 @@ const queue = process.env.QUEUE;
 
 
 
-amqp.connect(AMQP_CONNECT, function(error0, connection) {
+amqp.connect("amqp://simon:password@18.214.11.58:5672", function(error0, connection) {
   if (error0) {
     throw error0;
   }
