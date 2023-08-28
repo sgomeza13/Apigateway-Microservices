@@ -13,7 +13,7 @@ connect()
 
 async function connect() {
   try {
-    const amqpServer = conn_uri
+    const amqpServer = 'amqp://simon:password@18.214.11.58:5672'
     connection = await amqp.connect(amqpServer)
     channel = await connection.createChannel()
 
