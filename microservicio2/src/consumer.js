@@ -3,7 +3,7 @@ const AMQP_CONNECT = process.env.AMQP_CONNECT;
 const queue = "hello2";
 
 //var args = process.argv.slice(2);
-const messagesAmount = 1
+const messagesAmount = 6
 const wait = 400
 
 function sleep(ms) {
@@ -25,8 +25,9 @@ async function exitAfterSend() {
 
     process.exit(0)
 }
+
 async function publisher() {
-    const connection = await amqp.connect('amqp://simon:password@18.214.11.58:5672')
+    const connection = await amqp.connect('amqp://localhost')
     const channel = await connection.createChannel()
 
     await channel.assertQueue(queue)
@@ -55,3 +56,5 @@ publisher().catch((error) => {
     console.error(error)
     process.exit(1)
 })
+
+exitAfterSend()

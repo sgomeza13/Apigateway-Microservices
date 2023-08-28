@@ -11,8 +11,13 @@ const queue = "hello";
 
 
 
+function intensiveOperation() {
+    let i = 1e3
+    while (i--) {}
+}
+
 async function subscriber() {
-    const connection = await amqp.connect("amqp://simon:password@18.214.11.58:5672")
+    const connection = await amqp.connect('amqp://localhost')
     const channel = await connection.createChannel()
 
     await channel.assertQueue(queue)
@@ -33,10 +38,3 @@ subscriber().catch((error) => {
     console.error(error)
     process.exit(1)
 })
-
-
-function listFiles() {
-     const response = fs.readdirSync("../testfiles");
-     return response;
-
-}
