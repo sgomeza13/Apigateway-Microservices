@@ -39,34 +39,32 @@ app.get('/listfiles',( req, res)=> {
     
     try {
         const client = new SearchRequest(REMOTE_HOST, grpc.credentials.createInsecure());
+        console.info("Consumer service is started...");
+        request_service = 1;
+        client.SearchR({request_service:request_service},(err,data) => {
+           // console.log(err);   
+           const data = {
+            request_service:1,
+            search_file:""
+        }            
+                res.send(data)
+            
+        });
     } catch (error) {
         console.log(error)
+
+        channel.sendToQueue(
+            'order',
+            Buffer.from(
+              JSON.stringify({
+                ...data
+              }),
+            ),
+          )
+        res.send("sent to MoM")
     }
     
-    console.info("Consumer service is started...");
-    request_service = 1;
-    client.SearchR({request_service:request_service},(err,data) => {
-       // console.log(err);
-        if(err){
-            const data = {
-                request_service:1,
-                search_file:""
-            }
-            channel.sendToQueue(
-                'order',
-                Buffer.from(
-                  JSON.stringify({
-                    ...data
-                  }),
-                ),
-              )
-            res.send("sent to MoM")
-            
-        }
-        else{
-            res.send(data)
-        }
-    });
+
 
     
 })
