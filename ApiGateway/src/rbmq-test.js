@@ -1,24 +1,40 @@
-import amqp from "amqplib";
+import amqp from "amqplib/callback_api";
 
-const queue = "product_inventory";
-const text = {
-  item_id: "macbook",
-  text: "This is a sample message to send receiver to check the ordered Item Availablility",
-};
-
-(async () => {
-  let connection;
-  try {
-    connection = await amqp.connect("amqp://simon:password@18.214.11.58:5672");
-    const channel = await connection.createChannel();
-
-    await channel.assertQueue(queue, { durable: false });
-    channel.sendToQueue(queue, Buffer.from(JSON.stringify(text)));
-    console.log(" [x] Sent '%s'", text);
-    await channel.close();
-  } catch (err) {
-    console.warn(err);
-  } finally {
-    if (connection) await connection.close();
+amqp.connect('amqp://simon:password@18.214.11.58:5672', function(error0, connection) {
+  if (error0) {
+    throw error0;
   }
-})();
+  connection.createChannel(function(error1, channel) {
+    if (error1) {
+      throw error1;
+    }
+    var queue = 'rpc_queue';
+
+    channel.assertQueue(queue, {
+      durable: false
+    });
+    channel.prefetch(1);
+    console.log(' [x] Awaiting RPC requests');
+    channel.consume(queue, function reply(msg) {
+      var n = parseInt(msg.content.toString());
+
+      console.log(" [.] fib(%d)", n);
+
+      var r = fibonacci(n);
+
+      channel.sendToQueue(msg.properties.replyTo,
+        Buffer.from(r.toString()), {
+          correlationId: msg.properties.correlationId
+        });
+
+      channel.ack(msg);
+    });
+  });
+});
+
+function fibonacci(n) {
+  if (n == 0 || n == 1)
+    return n;
+  else
+    return fibonacci(n - 1) + fibonacci(n - 2);
+}

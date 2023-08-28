@@ -1,33 +1,53 @@
-import amqp from "amqplib";
+import amqp from "amqplib/callback_api";
 
-const queue = "product_inventory";
+var args = process.argv.slice(2);
 
-(async () => {
-  try {
-    const connection = await amqp.connect("amqp://simon:password@18.214.11.58:5672");
-    const channel = await connection.createChannel();
+if (args.length == 0) {
+  console.log("Usage: rpc_client.js num");
+  process.exit(1);
+}
 
-    process.once("SIGINT", async () => {
-      await channel.close();
-      await connection.close();
-    });
-
-    await channel.assertQueue(queue, { durable: false });
-    await channel.consume(
-      queue,
-      (message) => {
-        if (message) {
-          console.log(
-            " [x] Received '%s'",
-            JSON.parse(message.content.toString())
-          );
-        }
-      },
-      { noAck: true }
-    );
-
-    console.log(" [*] Waiting for messages. To exit press CTRL+C");
-  } catch (err) {
-    console.warn(err);
+amqp.connect('amqp://localhost', function(error0, connection) {
+  if (error0) {
+    throw error0;
   }
-})();
+  connection.createChannel(function(error1, channel) {
+    if (error1) {
+      throw error1;
+    }
+    channel.assertQueue('', {
+      exclusive: true
+    }, function(error2, q) {
+      if (error2) {
+        throw error2;
+      }
+      var correlationId = generateUuid();
+      var num = parseInt(args[0]);
+
+      console.log(' [x] Requesting fib(%d)', num);
+
+      channel.consume(q.queue, function(msg) {
+        if (msg.properties.correlationId == correlationId) {
+          console.log(' [.] Got %s', msg.content.toString());
+          setTimeout(function() {
+            connection.close();
+            process.exit(0)
+          }, 500);
+        }
+      }, {
+        noAck: true
+      });
+
+      channel.sendToQueue('rpc_queue',
+        Buffer.from(num.toString()),{
+          correlationId: correlationId,
+          replyTo: q.queue });
+    });
+  });
+});
+
+function generateUuid() {
+  return Math.random().toString() +
+         Math.random().toString() +
+         Math.random().toString();
+}
