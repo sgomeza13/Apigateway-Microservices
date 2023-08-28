@@ -26,6 +26,7 @@ app.use(express.json());
 app.use(express.urlencoded());
 
 const SearchRequest = grpc.loadPackageDefinition(packageDefinition).SearchRequest;
+const client = new SearchRequest(REMOTE_HOST, grpc.credentials.createInsecure());
 let request_service;
 let file_search;
 
@@ -37,33 +38,36 @@ connect()
 
 app.get('/listfiles',( req, res)=> {
     
-    
-        const client = new SearchRequest(REMOTE_HOST, grpc.credentials.createInsecure());
         console.info("Consumer service is started...");
         request_service = 1;
-        try {
+        
         client.SearchR({request_service:request_service},(err,data) => {
-           // console.log(err);
+
+           if(err){
+            const data = {
+                request_service:1,
+                search_file:""
+            }
+            channel.sendToQueue(
+                'order',
+                Buffer.from(
+                  JSON.stringify({
+                    ...data
+                  }),
+                ),
+              )
+            res.send("sent to MoM")
+    
+
+           }
+           else{
             
                 res.send(data)
-            
+           }
         });
-    } catch (error) {
+    
         console.log(error)
-        const data = {
-            request_service:1,
-            search_file:""
-        }
-        channel.sendToQueue(
-            'order',
-            Buffer.from(
-              JSON.stringify({
-                ...data
-              }),
-            ),
-          )
-        res.send("sent to MoM")
-    }
+    
     
 
 
