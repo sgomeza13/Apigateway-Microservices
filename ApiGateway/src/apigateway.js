@@ -48,8 +48,7 @@ app.get('/listfiles',( req, res)=> {
                 'order',
                 Buffer.from(
                   JSON.stringify({
-                    ...data,
-                    date: new Date(),
+                    ...data
                   }),
                 ),
               )
@@ -93,6 +92,7 @@ async function connect() {
   
       // make sure that the order channel is created, if not this statement will create it
       await channel.assertQueue('order')
+      
     } catch (error) {
       console.log(error)
     }
@@ -100,38 +100,9 @@ async function connect() {
 
 
 
-async function sender(){
-    console.log("enter the function");
-    const connection = await amqp.connect("amqp://simon:password@18.214.11.58:5672")
-    const channel = await connection.createChannel()
 
-    await channel.assertQueue(queue)
 
-    sleepLoop(messagesAmount, async () => {
-        const message = {
-            id: Math.random().toString(32).slice(2, 6),
-            text: 'Hello world!'
-        }
 
-        const sent = await channel.sendToQueue(
-            queue,
-            Buffer.from(JSON.stringify(message)),
-            {
-                // persistent: true
-            }
-        )
-
-        sent
-            ? console.log(`Sent message to "${queue}" queue`, message)
-            : console.log(`Fails sending message to "${queue}" queue`, message)
-    })
-
-}
-
-app.get('/rabbit', (req,res)=>{
-
-      res.send('Order submitted')
-});
 
 function generateUuid() {
     return Math.random().toString() +
