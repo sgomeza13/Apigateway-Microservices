@@ -22,7 +22,7 @@ const packageDefinition = protoLoader.loadSync(
     });
 const keepaliveOptions = {
     keepaliveTimeMs: 10000, // Interval to send keepalive ping (milliseconds)
-    keepaliveTimeoutMs: 5000, // Timeout for keepalive response (milliseconds)
+    keepaliveTimeoutMs: 27200000, // Timeout for keepalive response (milliseconds)
     keepalivePermitWithoutCalls: true, // Allow keepalive pings even if no active calls
 };
 
