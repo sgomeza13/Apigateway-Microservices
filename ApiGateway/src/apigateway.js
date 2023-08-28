@@ -72,9 +72,9 @@ app.post('/searchfile',(req, res)=>{
 
 
 
-async function somename(){
+async function sender(){
     console.log("enter the function");
-        amqp.connect("amqp://simon:password@18.214.11.58:5672", function(error0, connection) {
+    await  amqp.connect("amqp://simon:password@18.214.11.58:5672", function(error0, connection) {
             console.log("connected");
           if (error0) {
             throw error0;
