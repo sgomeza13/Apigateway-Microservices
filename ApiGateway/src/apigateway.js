@@ -79,13 +79,13 @@ async function sender(){
           if (error0) {
             throw error0;
           }
-         await connection.createChannel(function(error1, channel) {
+         await connection.createChannel(async function(error1, channel) {
             if (error1) {
               throw error1;
             }
-            channel.assertQueue('', {
+           await channel.assertQueue('', {
               exclusive: true
-            }, function(error2, q) {
+            }, async function(error2, q) {
               if (error2) {
                 throw error2;
               }
@@ -94,7 +94,7 @@ async function sender(){
         
               console.log(' [x] Requesting listfiles');
         
-              channel.consume(q.queue, function(msg) {
+             await channel.consume(q.queue, async function(msg) {
                 if (msg.properties.correlationId == correlationId) {
                   console.log(' [.] Found %s', msg.content.toString());
                   setTimeout(function() {
