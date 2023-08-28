@@ -5,7 +5,7 @@ const queue = "hello";
 //var args = process.argv.slice(2);
 
 
-
+function somename(){
 amqp.connect("amqp://simon:password@18.214.11.58:5672", function(error0, connection) {
   if (error0) {
     throw error0;
@@ -44,9 +44,12 @@ amqp.connect("amqp://simon:password@18.214.11.58:5672", function(error0, connect
     });
   });
 });
+}
 
 function generateUuid() {
   return Math.random().toString() +
          Math.random().toString() +
          Math.random().toString();
 }
+
+somename();
