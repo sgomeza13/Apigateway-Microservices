@@ -1,4 +1,4 @@
-import amqp from "amqplib/callback_api";
+import amqp from "amqplib/callback_api.js";
 const AMQP_CONNECT = process.env.AMQP_CONNECT;
 const queue = "hello";
 
