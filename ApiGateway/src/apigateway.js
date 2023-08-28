@@ -6,7 +6,8 @@ import amqp from 'amqplib'
 import asyncHandler from 'express-async-handler';
 
 dotenv.config();
-const queue = "hello";
+const queue = "hello2";
+const messagesAmount = 1
 //Definicionn de constantes para gRPC
 const app = express();
 const port = process.env.PORT;
@@ -67,58 +68,57 @@ app.post('/searchfile',(req, res)=>{
     
 })
 
+const wait = 400
 
+function sleep(ms) {
+    return new Promise((resolve) => {
+        setTimeout(resolve, ms)
+    })
+}
 
+async function sleepLoop(number, cb) {
+    while (number--) {
+        await sleep(wait)
 
+        cb()
+    }
+}
 
 
 async function sender(){
     console.log("enter the function");
-    await  amqp.connect("amqp://simon:password@18.214.11.58:5672", async function(error0, connection) {
-            console.log("connected");
-          if (error0) {
-            throw error0;
-          }
-         await connection.createChannel(async function(error1, channel) {
-            if (error1) {
-              throw error1;
+    const connection = await amqp.connect("amqp://simon:password@18.214.11.58:5672")
+    const channel = await connection.createChannel()
+
+    await channel.assertQueue(queue)
+
+    sleepLoop(messagesAmount, async () => {
+        const message = {
+            id: Math.random().toString(32).slice(2, 6),
+            text: 'Hello world!'
+        }
+
+        const sent = await channel.sendToQueue(
+            queue,
+            Buffer.from(JSON.stringify(message)),
+            {
+                // persistent: true
             }
-           await channel.assertQueue('', {
-              exclusive: true
-            }, async function(error2, q) {
-              if (error2) {
-                throw error2;
-              }
-              var correlationId = generateUuid();
-              var num = 9;
-        
-              console.log(' [x] Requesting listfiles');
-        
-             await channel.consume(q.queue, async function(msg) {
-                if (msg.properties.correlationId == correlationId) {
-                  console.log(' [.] Found %s', msg.content.toString());
-                  setTimeout(function() {
-                    connection.close();
-                    process.exit(0)
-                  }, 500);
-                }
-              }, {
-                noAck: true
-              });
-        
-              channel.sendToQueue(queue,
-                Buffer.from(num.toString()),{
-                  correlationId: correlationId,
-                  replyTo: q.queue });
-            });
-          });
-        });
-        return "hola"
+        )
+
+        sent
+            ? console.log(`Sent message to "${queue}" queue`, message)
+            : console.log(`Fails sending message to "${queue}" queue`, message)
+    })
+
 }
 
 app.get('/rabbit', asyncHandler(async(req,res)=>{
-   const msg = await sender();             
-    res.send(msg);
+    sender().catch((error) => {
+        console.error(error)
+        process.exit(1)
+    })             
+    res.send("msg");
 }));
 
 function generateUuid() {

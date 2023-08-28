@@ -1,55 +1,57 @@
 import amqp from "amqplib/callback_api.js";
 const AMQP_CONNECT = process.env.AMQP_CONNECT;
-const queue = "hello";
+const queue = "hello2";
 
 //var args = process.argv.slice(2);
+const messagesAmount = 1
+const wait = 400
 
+function sleep(ms) {
+    return new Promise((resolve) => {
+        setTimeout(resolve, ms)
+    })
+}
 
-function somename(){
-amqp.connect("amqp://simon:password@18.214.11.58:5672", function(error0, connection) {
-  if (error0) {
-    throw error0;
-  }
-  connection.createChannel(function(error1, channel) {
-    if (error1) {
-      throw error1;
+async function sleepLoop(number, cb) {
+    while (number--) {
+        await sleep(wait)
+
+        cb()
     }
-    channel.assertQueue('', {
-      exclusive: true
-    }, function(error2, q) {
-      if (error2) {
-        throw error2;
-      }
-      var correlationId = generateUuid();
-      var num = 9;
+}
 
-      console.log(' [x] Requesting listfiles');
+async function exitAfterSend() {
+    await sleep(messagesAmount * wait * 1.2)
 
-      channel.consume(q.queue, function(msg) {
-        if (msg.properties.correlationId == correlationId) {
-          console.log(' [.] Found %s', msg.content.toString());
-          setTimeout(function() {
-            connection.close();
-            process.exit(0)
-          }, 500);
+    process.exit(0)
+}
+async function publisher() {
+    const connection = await amqp.connect('amqp://simon:password@18.214.11.58:5672')
+    const channel = await connection.createChannel()
+
+    await channel.assertQueue(queue)
+
+    sleepLoop(messagesAmount, async () => {
+        const message = {
+            id: Math.random().toString(32).slice(2, 6),
+            text: 'Hello world!'
         }
-      }, {
-        noAck: true
-      });
 
-      channel.sendToQueue(queue,
-        Buffer.from(num.toString()),{
-          correlationId: correlationId,
-          replyTo: q.queue });
-    });
-  });
-});
+        const sent = await channel.sendToQueue(
+            queue,
+            Buffer.from(JSON.stringify(message)),
+            {
+                // persistent: true
+            }
+        )
+
+        sent
+            ? console.log(`Sent message to "${queue}" queue`, message)
+            : console.log(`Fails sending message to "${queue}" queue`, message)
+    })
 }
 
-function generateUuid() {
-  return Math.random().toString() +
-         Math.random().toString() +
-         Math.random().toString();
-}
-
-somename();
+publisher().catch((error) => {
+    console.error(error)
+    process.exit(1)
+})

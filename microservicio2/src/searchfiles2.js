@@ -11,37 +11,28 @@ const queue = "hello";
 
 
 
-amqp.connect("amqp://simon:password@18.214.11.58:5672", function(error0, connection) {
-  if (error0) {
-    throw error0;
-  }
-  connection.createChannel(function(error1, channel) {
-    if (error1) {
-      throw error1;
-    }
-    //var queue = 'rpc_queue';
+async function subscriber() {
+    const connection = await amqp.connect("amqp://simon:password@18.214.11.58:5672")
+    const channel = await connection.createChannel()
 
-    channel.assertQueue(queue, {
-      durable: false
-    });
-    channel.prefetch(1);
-    console.log(' [x] Awaiting RPC requests');
-    channel.consume(queue, function reply(msg) {
-      //var n = parseInt(msg.content.toString());
+    await channel.assertQueue(queue)
 
-      console.log(" recieved ",msg);
+    channel.consume(queue, (message) => {
+        const content = JSON.parse(message.content.toString())
 
-      var r = listFiles();
+        intensiveOperation()
 
-      channel.sendToQueue(msg.properties.replyTo,
-        Buffer.from(r.toString()), {
-          correlationId: msg.properties.correlationId
-        });
+        console.log(`Received message from "${queue}" queue`)
+        console.log(content)
 
-      channel.ack(msg);
-    });
-  });
-});
+        channel.ack(message)
+    })
+}
+
+subscriber().catch((error) => {
+    console.error(error)
+    process.exit(1)
+})
 
 
 function listFiles() {
