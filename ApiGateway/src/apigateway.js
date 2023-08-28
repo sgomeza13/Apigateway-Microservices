@@ -42,17 +42,21 @@ app.get('/listfiles',( req, res)=> {
         console.info("Consumer service is started...");
         request_service = 1;
         client.SearchR({request_service:request_service},(err,data) => {
-           // console.log(err);   
-           const data = {
-            request_service:1,
-            search_file:""
-        }            
+           // console.log(err);
+            
+
+                
+            
+            
                 res.send(data)
             
         });
     } catch (error) {
         console.log(error)
-
+        const data = {
+            request_service:1,
+            search_file:""
+        }
         channel.sendToQueue(
             'order',
             Buffer.from(
