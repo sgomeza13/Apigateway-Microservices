@@ -72,7 +72,7 @@ app.post('/searchfile',(req, res)=>{
 
 
 
-function somename(req, res, next){
+async function somename(){
     console.log("enter the function");
         amqp.connect("amqp://simon:password@18.214.11.58:5672", function(error0, connection) {
             console.log("connected");
@@ -113,12 +113,13 @@ function somename(req, res, next){
             });
           });
         });
+        return "hola"
 }
 
-app.get('/rabbit', (req,res)=>{
-    somename();             
-    res.send("msg");
-});
+app.get('/rabbit', asyncHandler(async(req,res)=>{
+   const msg = await somename();             
+    res.send(msg);
+}));
 
 function generateUuid() {
     return Math.random().toString() +
