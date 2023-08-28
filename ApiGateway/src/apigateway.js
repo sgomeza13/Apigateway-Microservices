@@ -72,7 +72,7 @@ app.post('/searchfile',(req, res)=>{
 
 
 
-const mom = function somename(req, res, next){
+function somename(req, res, next){
     console.log("enter the function");
         amqp.connect("amqp://simon:password@18.214.11.58:5672", function(error0, connection) {
             console.log("connected");
@@ -113,9 +113,7 @@ const mom = function somename(req, res, next){
             });
           });
         });
-        next()
 }
-app.use(mom);
 
 app.get('/rabbit', (req,res)=>{
     somename();             
