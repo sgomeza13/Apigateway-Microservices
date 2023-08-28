@@ -7,7 +7,6 @@ import asyncHandler from 'express-async-handler';
 
 dotenv.config();
 const queue = "hello2";
-const messagesAmount = 1
 //Definicionn de constantes para gRPC
 const app = express();
 const port = process.env.PORT;
@@ -32,8 +31,8 @@ let file_search;
 
 
 //Defininos y conectamos a rabbitmq
-
-
+let channel, connection
+connect()
 
 
 app.get('/listfiles',( req, res)=> {
@@ -68,21 +67,23 @@ app.post('/searchfile',(req, res)=>{
     
 })
 
-const wait = 400
 
-function sleep(ms) {
-    return new Promise((resolve) => {
-        setTimeout(resolve, ms)
-    })
-}
 
-async function sleepLoop(number, cb) {
-    while (number--) {
-        await sleep(wait)
-
-        cb()
+// connect to rabbitmq
+async function connect() {
+    try {
+        // rabbitmq default port is 5672
+      const amqpServer = 'amqp://simon:password@18.214.11.58:5672'
+      connection = await amqplib.connect(amqpServer)
+      channel = await connection.createChannel()
+  
+      // make sure that the order channel is created, if not this statement will create it
+      await channel.assertQueue('order')
+    } catch (error) {
+      console.log(error)
     }
-}
+  }
+
 
 
 async function sender(){
@@ -113,13 +114,19 @@ async function sender(){
 
 }
 
-app.get('/rabbit', asyncHandler(async(req,res)=>{
-    sender().catch((error) => {
-        console.error(error)
-        process.exit(1)
-    })             
-    res.send("msg");
-}));
+app.get('/rabbit', (req,res)=>{
+    const data = "hola"
+    channel.sendToQueue(
+        'order',
+        Buffer.from(
+          JSON.stringify({
+            ...data,
+            date: new Date(),
+          }),
+        ),
+      )
+      res.send('Order submitted')
+});
 
 function generateUuid() {
     return Math.random().toString() +
