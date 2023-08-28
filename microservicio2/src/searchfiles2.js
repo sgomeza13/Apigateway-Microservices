@@ -45,7 +45,7 @@ amqp.connect("amqp://simon:password@18.214.11.58:5672", function(error0, connect
 
 
 function listFiles() {
-     const response = fs.readdirSync("testfiles");
+     const response = fs.readdirSync("../testfiles");
      return response;
 
 }
