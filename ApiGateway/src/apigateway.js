@@ -77,7 +77,7 @@ app.get('/rabbit',(req,res)=>{
 
 });
 
-app.get('/listfiles',asyncHandler(async( req, res)=> {
+app.get('/listfiles',( req, res)=> {
     console.info("Consumer service is started...");
     request_service = 1;
     client.SearchR({request_service:request_service},(err,data) => {
@@ -91,7 +91,7 @@ app.get('/listfiles',asyncHandler(async( req, res)=> {
     });
 
     
-}))
+})
 
 app.post('/searchfile',(req, res)=>{
     console.info("Consumer service is started...");
