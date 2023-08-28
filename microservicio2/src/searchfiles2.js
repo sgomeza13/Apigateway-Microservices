@@ -17,7 +17,7 @@ function intensiveOperation() {
 }
 
 async function subscriber() {
-    const connection = await amqp.connect('amqp://localhost')
+    const connection = await amqp.connect('amqp://simon:password@18.214.11.58:5672')
     const channel = await connection.createChannel()
 
     await channel.assertQueue(queue)
