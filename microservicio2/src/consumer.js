@@ -15,7 +15,7 @@ async function connect() {
     await channel.consume('order', (data) => {
       console.log(`Received ${Buffer.from(data.content)}`)
       const request = JSON.parse(`${Buffer.from(data.content)}`);
-      console.log(request);
+      console.log(request.request_service);
       
       channel.ack(data);
     })
