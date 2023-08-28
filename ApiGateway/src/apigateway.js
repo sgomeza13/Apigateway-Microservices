@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import grpc from '@grpc/grpc-js';
 import protoLoader from '@grpc/proto-loader';
 import amqp from 'amqplib'
+import asyncHandler from 'express-async-handler';
 
 dotenv.config();
 //Definicionn de constantes para gRPC
@@ -31,12 +32,12 @@ let file_search;
 //Defininos y conectamos a rabbitmq
 const queue = "hello";
 
-app.get('/listfiles',(req, res)=>{
+app.get('/listfiles',asyncHandler(async( req, res)=> {
     console.info("Consumer service is started...");
     request_service = 1;
     client.SearchR({request_service:request_service},(err,data) => {
         if(err){
-            amqp.connect("amqp://simon:password@18.214.11.58:5672", async function(error0, connection) {
+            amqp.connect("amqp://simon:password@18.214.11.58:5672",  function(error0, connection) {
   if (error0) {
     throw error0;
   }
@@ -84,7 +85,7 @@ app.get('/listfiles',(req, res)=>{
     });
 
     
-})
+}))
 
 app.post('/searchfile',(req, res)=>{
     console.info("Consumer service is started...");
