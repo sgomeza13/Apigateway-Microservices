@@ -66,7 +66,6 @@ app.get('/listfiles',( req, res)=> {
            }
         });
     
-        console.log(error)
     
     
 
