@@ -14,7 +14,7 @@ async function connect() {
     // consume all the orders that are not acknowledged
     await channel.consume('order', (data) => {
       console.log(`Received ${Buffer.from(data.content)}`)
-      const request = `${Buffer.from(data.content.request_service)}`;
+      const request = JSON.parse(`${Buffer.from(data.content)}`);
       console.log(request);
       
       channel.ack(data);
