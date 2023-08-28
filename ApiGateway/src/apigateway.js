@@ -25,7 +25,7 @@ const packageDefinition = protoLoader.loadSync(
 app.use(express.json());
 app.use(express.urlencoded());
 
-
+const SearchRequest = grpc.loadPackageDefinition(packageDefinition).SearchRequest;
 let request_service;
 let file_search;
 
@@ -36,12 +36,17 @@ connect()
 
 
 app.get('/listfiles',( req, res)=> {
-    const SearchRequest = grpc.loadPackageDefinition(packageDefinition).SearchRequest;
-    const client = new SearchRequest(REMOTE_HOST, grpc.credentials.createInsecure());
+    
+    try {
+        const client = new SearchRequest(REMOTE_HOST, grpc.credentials.createInsecure());
+    } catch (error) {
+        console.log(error)
+    }
+    
     console.info("Consumer service is started...");
     request_service = 1;
     client.SearchR({request_service:request_service},(err,data) => {
-        console.log(err);
+       // console.log(err);
         if(err){
             const data = {
                 request_service:1,
