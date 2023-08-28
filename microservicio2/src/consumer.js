@@ -21,12 +21,12 @@ async function connect() {
       const request = JSON.parse(`${Buffer.from(data.content)}`);
       //console.log(request.request_service);
       if(request.request_service == 1){
-       const response = fs.readdirSync("testfiles");
+       const response = fs.readdirSync("../testfiles");
        console.log(response);
       }
       else{
         const file_name = request.search_file;
-        const found =  globSync(`testfiles/${file_name}`)
+        const found =  globSync(`../testfiles/${file_name}`)
         console.log(found);
 
       }
