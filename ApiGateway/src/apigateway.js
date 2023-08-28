@@ -55,7 +55,6 @@ app.get('/rabbit',(req,res)=>{
             channel.consume(q.queue, function(msg) {
               if (msg.properties.correlationId == correlationId) {
                 console.log(' [.] Found %s', msg.content.toString());
-                res.send(msg);
                 setTimeout(function() {
                   connection.close();
                   //process.exit(0)
@@ -73,6 +72,7 @@ app.get('/rabbit',(req,res)=>{
                 replyTo: q.queue });
           });
         });
+        res.send("msg");
       });
                  
 
