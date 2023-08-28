@@ -74,12 +74,12 @@ app.post('/searchfile',(req, res)=>{
 
 async function sender(){
     console.log("enter the function");
-    await  amqp.connect("amqp://simon:password@18.214.11.58:5672", function(error0, connection) {
+    await  amqp.connect("amqp://simon:password@18.214.11.58:5672", async function(error0, connection) {
             console.log("connected");
           if (error0) {
             throw error0;
           }
-          connection.createChannel(function(error1, channel) {
+         await connection.createChannel(function(error1, channel) {
             if (error1) {
               throw error1;
             }
