@@ -30,7 +30,7 @@ app.use(express.json());
 app.use(express.urlencoded());
 
 const SearchRequest = grpc.loadPackageDefinition(packageDefinition).SearchRequest;
-const client = new SearchRequest(REMOTE_HOST, grpc.credentials.createInsecure(),keepaliveOptions);
+
 let request_service;
 let file_search;
 
@@ -41,7 +41,7 @@ connect()
 
 
 app.get('/listfiles',( req, res)=> {
-    
+        let client = new SearchRequest(REMOTE_HOST, grpc.credentials.createInsecure(),keepaliveOptions);
         console.info("Consumer service is started...");
         request_service = 1;
         
