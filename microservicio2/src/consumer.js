@@ -6,7 +6,7 @@ dotenv.config();
 
 
 const conn_uri = process.env.AMQP_CONNECT;
-const file_path = process.env.file_path;
+const file_path = process.env.file_path || 'testfiles';
 
 
 let channel, connection
