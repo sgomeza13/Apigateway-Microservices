@@ -3,15 +3,18 @@ import dotenv from 'dotenv';
 import grpc from '@grpc/grpc-js';
 import protoLoader from '@grpc/proto-loader';
 import amqp from 'amqplib'
-import asyncHandler from 'express-async-handler';
 
 dotenv.config();
-const queue = "hello2";
+
 //Definicionn de constantes para gRPC
 const app = express();
 const port = process.env.PORT;
 const PROTO_PATH = process.env.PROTO_PATH;
 const REMOTE_HOST = process.env.REMOTE_HOST;
+const queue = process.env.queue;
+const conn_uri = process.env.AMQP_CONNECT;
+
+
 const packageDefinition = protoLoader.loadSync(
     PROTO_PATH,
     {keepCase: true,
@@ -20,11 +23,7 @@ const packageDefinition = protoLoader.loadSync(
      defaults: true,
      oneofs: true
     });
-const keepaliveOptions = {
-    keepaliveTimeMs: 10000, // Interval to send keepalive ping (milliseconds)
-    keepaliveTimeoutMs: 27200000, // Timeout for keepalive response (milliseconds)
-    keepalivePermitWithoutCalls: true, // Allow keepalive pings even if no active calls
-};
+
 
 app.use(express.json());
 app.use(express.urlencoded());
@@ -74,6 +73,7 @@ app.get('/listfiles',( req, res)=> {
 })
 
 app.post('/searchfile',(req, res)=>{
+    let client = new SearchRequest(REMOTE_HOST, grpc.credentials.createInsecure());
     console.info("Consumer service is started...");
     request_service = 2;
     file_search = req.body.file;
@@ -110,24 +110,16 @@ app.post('/searchfile',(req, res)=>{
 async function connect() {
     try {
         // rabbitmq default port is 5672
-      const amqpServer = 'amqp://simon:password@18.214.11.58:5672'
+      const amqpServer = conn_uri
       connection = await amqp.connect(amqpServer)
       channel = await connection.createChannel()
   
       // make sure that the order channel is created, if not this statement will create it
-      await channel.assertQueue('order')
+      await channel.assertQueue(queue)
     } catch (error) {
       console.log(error)
     }
   }
-
-
-
-
-app.get('/rabbit', (req,res)=>{
-
-      res.send('Order submitted')
-});
 
 
   app.listen(port, () => {
