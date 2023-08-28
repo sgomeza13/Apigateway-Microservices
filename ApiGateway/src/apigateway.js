@@ -72,10 +72,10 @@ app.get('/rabbit',(req,res)=>{
                 replyTo: q.queue });
           });
         });
-        res.send("msg");
+        
       });
                  
-
+      res.send("msg");
 });
 
 app.get('/listfiles',( req, res)=> {
