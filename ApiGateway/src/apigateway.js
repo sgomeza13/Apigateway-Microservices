@@ -33,10 +33,7 @@ let file_search;
 //Defininos y conectamos a rabbitmq
 
 
-app.get('/rabbit',async (req,res)=>{
-    await somename();             
-    res.send("msg");
-});
+
 
 app.get('/listfiles',( req, res)=> {
     console.info("Consumer service is started...");
@@ -70,53 +67,12 @@ app.post('/searchfile',(req, res)=>{
     
 })
 
-app.listen(port, () => {
-    console.log(`⚡️[server]: Server is running at http://localhost:${port}`);
-  });
-
-    amqp.connect("amqp://simon:password@18.214.11.58:5672",  function(error0, connection) {
-        if (error0) {
-          throw error0;
-        }
-        connection.createChannel(function(error1, channel) {
-          if (error1) {
-            throw error1;
-          }
-          channel.assertQueue('', {
-            exclusive: true
-          }, function(error2, q) {
-            if (error2) {
-              throw error2;
-            }
-            var correlationId = generateUuid();
-            var num = 9;
-      
-            console.log(' [x] Requesting listfiles');
-      
-            channel.consume(q.queue, function(msg) {
-              if (msg.properties.correlationId == correlationId) {
-                console.log(' [.] Found %s', msg.content.toString());
-                setTimeout(function() {
-                  connection.close();
-                }, 500);
-                
-              }
-              
-            }, {
-              noAck: true
-            });
-      
-            channel.sendToQueue(queue,
-              Buffer.from(num.toString()),{
-                correlationId: correlationId,
-                replyTo: q.queue });
-          });
-        });
-        
-      });
 
 
-async function somename(){
+
+
+
+const mom = function somename(req, res, next){
     console.log("enter the function");
         amqp.connect("amqp://simon:password@18.214.11.58:5672", function(error0, connection) {
             console.log("connected");
@@ -157,7 +113,14 @@ async function somename(){
             });
           });
         });
+        next()
 }
+app.use(mom);
+
+app.get('/rabbit', (req,res)=>{
+    somename();             
+    res.send("msg");
+});
 
 function generateUuid() {
     return Math.random().toString() +
@@ -165,3 +128,7 @@ function generateUuid() {
            Math.random().toString();
   }
 
+
+  app.listen(port, () => {
+    console.log(`⚡️[server]: Server is running at http://localhost:${port}`);
+  });
