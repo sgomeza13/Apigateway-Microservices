@@ -79,12 +79,26 @@ app.post('/searchfile',(req, res)=>{
     file_search = req.body.file;
     client.SearchR({request_service:request_service, file_search:file_search},(err,data) => {
         if(err){
+            const data = {
+                request_service:2,
+                search_file:file_search
+            }
+            channel.sendToQueue(
+                'order',
+                Buffer.from(
+                  JSON.stringify({
+                    ...data
+                  }),
+                ),
+              )
+            res.send("sent to MoM")
+    
 
-            res.send(err)
-        }
-        else{
-            res.send(data)
-        }
+           }
+           else{
+            
+                res.send(data)
+           }
     });
 
     
