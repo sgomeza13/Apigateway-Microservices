@@ -38,27 +38,28 @@ connect()
 app.get('/listfiles',( req, res)=> {
     console.info("Consumer service is started...");
     request_service = 1;
-    client.SearchR({request_service:request_service},(err,data) => {
-        if(err){
-            const data = {
-                request_service:1,
-                search_file:""
-            }
-            channel.sendToQueue(
-                'order',
-                Buffer.from(
-                  JSON.stringify({
-                    ...data
-                  }),
-                ),
-              )
-            res.send("sent to MoM")
-            
+    try {
+        client.SearchR({request_service:request_service},(err,data) => {
+            res.send(data);
+        });
+        
+    } catch (error) {
+        const data = {
+            request_service:1,
+            search_file:""
         }
-        else{
-            res.send(data)
-        }
-    });
+        channel.sendToQueue(
+            'order',
+            Buffer.from(
+              JSON.stringify({
+                ...data
+              }),
+            ),
+          )
+        res.send("sent to MoM")
+        
+    }
+
 
     
 })
