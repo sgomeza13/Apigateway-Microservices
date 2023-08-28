@@ -117,7 +117,7 @@ async function sender(){
 }
 
 app.get('/rabbit', asyncHandler(async(req,res)=>{
-   const msg = await somename();             
+   const msg = await sender();             
     res.send(msg);
 }));
 
