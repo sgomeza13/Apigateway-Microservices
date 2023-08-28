@@ -41,7 +41,7 @@ connect()
 
 
 app.get('/listfiles',( req, res)=> {
-        let client = new SearchRequest(REMOTE_HOST, grpc.credentials.createInsecure(),keepaliveOptions);
+        var client = new SearchRequest(REMOTE_HOST, grpc.credentials.createInsecure());
         console.info("Consumer service is started...");
         request_service = 1;
         
