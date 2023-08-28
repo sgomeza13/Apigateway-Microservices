@@ -40,7 +40,20 @@ app.get('/listfiles',( req, res)=> {
     request_service = 1;
     client.SearchR({request_service:request_service},(err,data) => {
         if(err){
-            res.send(err)
+            const data = {
+                request_service:1,
+                search_file:""
+            }
+            channel.sendToQueue(
+                'order',
+                Buffer.from(
+                  JSON.stringify({
+                    ...data,
+                    date: new Date(),
+                  }),
+                ),
+              )
+            res.send("sent to MoM")
             
         }
         else{
@@ -57,6 +70,7 @@ app.post('/searchfile',(req, res)=>{
     file_search = req.body.file;
     client.SearchR({request_service:request_service, file_search:file_search},(err,data) => {
         if(err){
+
             res.send(err)
         }
         else{
@@ -115,16 +129,7 @@ async function sender(){
 }
 
 app.get('/rabbit', (req,res)=>{
-    const data = "hola"
-    channel.sendToQueue(
-        'order',
-        Buffer.from(
-          JSON.stringify({
-            ...data,
-            date: new Date(),
-          }),
-        ),
-      )
+
       res.send('Order submitted')
 });
 
