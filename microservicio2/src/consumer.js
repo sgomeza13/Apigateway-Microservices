@@ -3,15 +3,17 @@ import fs from 'fs';
 import { glob, globSync, globStream, globStreamSync, Glob } from 'glob'
 
 
-const AMQP_CONNECT = process.env.AMQP_CONNECT;
-const queue = "hello2";
+const conn_uri = process.env.AMQP_CONNECT;
+const file_path = process.env.file_path;
+
+
 let channel, connection
 
 connect()
 
 async function connect() {
   try {
-    const amqpServer = 'amqp://simon:password@18.214.11.58:5672'
+    const amqpServer = conn_uri
     connection = await amqp.connect(amqpServer)
     channel = await connection.createChannel()
 
@@ -21,12 +23,12 @@ async function connect() {
       const request = JSON.parse(`${Buffer.from(data.content)}`);
       //console.log(request.request_service);
       if(request.request_service == 1){
-       const response = fs.readdirSync("../testfiles");
+       const response = fs.readdirSync(file_path);
        console.log(response);
       }
       else{
         const file_name = request.search_file;
-        const found =  globSync(`../testfiles/${file_name}`)
+        const found =  globSync(`${file_path}/${file_name}`)
         console.log(found);
 
       }
