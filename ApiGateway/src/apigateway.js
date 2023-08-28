@@ -39,9 +39,9 @@ app.get('/listfiles',( req, res)=> {
     console.info("Consumer service is started...");
     request_service = 1;
     try {
-        client.SearchR({request_service:request_service},(err,data) => {
-            res.send(data);
-        });
+        client.SearchR({request_service:request_service});
+        res.send(data);
+    
         
     } catch (error) {
         const data = {
