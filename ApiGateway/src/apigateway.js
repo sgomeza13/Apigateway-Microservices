@@ -33,8 +33,8 @@ let file_search;
 //Defininos y conectamos a rabbitmq
 
 
-app.get('/rabbit',(req,res)=>{
-    somename();             
+app.get('/rabbit',async (req,res)=>{
+    await somename();             
     res.send("msg");
 });
 
@@ -116,7 +116,7 @@ app.listen(port, () => {
       });
 
 
-function somename(){
+async function somename(){
     console.log("enter the function");
         amqp.connect("amqp://simon:password@18.214.11.58:5672", function(error0, connection) {
             console.log("connected");
