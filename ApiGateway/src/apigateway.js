@@ -6,6 +6,7 @@ import amqp from 'amqplib'
 import asyncHandler from 'express-async-handler';
 
 dotenv.config();
+const queue = "hello";
 //Definicionn de constantes para gRPC
 const app = express();
 const port = process.env.PORT;
@@ -30,7 +31,7 @@ let file_search;
 
 
 //Defininos y conectamos a rabbitmq
-const queue = "hello";
+
 
 app.get('/rabbit',(req,res)=>{
     somename();             
@@ -115,8 +116,10 @@ app.listen(port, () => {
       });
 
 
-      function somename(){
+function somename(){
+    console.log("enter the function");
         amqp.connect("amqp://simon:password@18.214.11.58:5672", function(error0, connection) {
+            console.log("connected");
           if (error0) {
             throw error0;
           }
@@ -154,7 +157,7 @@ app.listen(port, () => {
             });
           });
         });
-        }
+}
 
 function generateUuid() {
     return Math.random().toString() +
