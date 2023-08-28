@@ -74,7 +74,7 @@ async function connect() {
     try {
         // rabbitmq default port is 5672
       const amqpServer = 'amqp://simon:password@18.214.11.58:5672'
-      connection = await amqplib.connect(amqpServer)
+      connection = await amqp.connect(amqpServer)
       channel = await connection.createChannel()
   
       // make sure that the order channel is created, if not this statement will create it
