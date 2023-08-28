@@ -7,9 +7,10 @@ import { glob, globSync, globStream, globStreamSync, Glob } from 'glob'
 dotenv.config();
 const server = new grpc.Server();
 
-const port = process.env.PORT;
 const PROTO_PATH = process.env.PROTO_PATH;
 const REMOTE_HOST = process.env.REMOTE_HOST;
+const file_path = process.env.file_path;
+
 const packageDefinition = protoLoader.loadSync(
     PROTO_PATH,
     {keepCase: true,
@@ -27,12 +28,12 @@ const searchR = (call, callback) => {
     let response = {}
     if(request_service.request_service == 1){
          response = {
-            response: fs.readdirSync("testfiles")
+            response: fs.readdirSync(file_path)
         };
     }
     else{
         const file_name = request_service.file_search;
-        const found =  globSync(`testfiles/${file_name}`)
+        const found =  globSync(`${file_path}/${file_name}`)
         if(found != ''){
         response = {
             response: found
