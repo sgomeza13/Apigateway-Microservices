@@ -1,4 +1,4 @@
-import amqp from "amqplib/callback_api";
+import amqp from "amqplib/callback_api.js";
 
 var args = process.argv.slice(2);
 
@@ -7,7 +7,7 @@ if (args.length == 0) {
   process.exit(1);
 }
 
-amqp.connect('"amqp://simon:password@18.214.11.58:5672"', function(error0, connection) {
+amqp.connect("amqp://simon:password@18.214.11.58:5672", function(error0, connection) {
   if (error0) {
     throw error0;
   }

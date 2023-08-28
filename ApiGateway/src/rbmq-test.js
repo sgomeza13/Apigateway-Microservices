@@ -15,7 +15,7 @@ amqp.connect("amqp://simon:password@18.214.11.58:5672", function(error0, connect
     if (error1) {
       throw error1;
     }
-    //var queue = 'rpc_queue';
+    var queue = 'rpc_queue';
 
     channel.assertQueue(queue, {
       durable: false
