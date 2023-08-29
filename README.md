@@ -1,6 +1,6 @@
 # info de la materia: ST0263 Temas especiales en telemática
 #
-# Estudiante(s): nombre, email-eafit
+# Estudiante(s): Simon Gomez Arango, sgomeza13@eafit.edu.co
 #
 # Profesor: Edwin Nelson Montoya Múnera, emontoya@eafit.edu.co
 #
@@ -57,26 +57,7 @@ La aplicacion de express corre en el puerto 3000, el de grpc en el puerto 8000 y
 ## opcional - detalles de la organización del código por carpetas o descripción de algún archivo. (ESTRUCTURA DE DIRECTORIOS Y ARCHIVOS IMPORTANTE DEL PROYECTO, comando 'tree' de linux)
 Cada servicio esta separado en carpetas idependientes, cada uno tiene sus propias dependencias y variables de entorno
 
-├── ApiGateway
-│   ├── package.json
-│   ├── package-lock.json
-│   ├── protobuf
-│   │   └── microservice1.proto
-│   └── src
-│       └── apigateway.js
-├── microservicio1
-│   ├── package.json
-│   ├── package-lock.json
-│   ├── protobuf
-│   │   └── microservice1.proto
-│   └── src
-│       └── microservice1.js
-├── microservicio2
-│   ├── package.json
-│   ├── package-lock.json
-│   └── src
-│       └── microservice2.js
-└── README.md
+![Alt text](image-5.png)
 ## 
 ## opcionalmente - si quiere mostrar resultados o pantallazos 
 **listfiles grpc**
