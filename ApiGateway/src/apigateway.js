@@ -52,7 +52,7 @@ app.get('/listfiles',( req, res)=> {
                 search_file:""
             }
             channel.sendToQueue(
-                'order',
+              queue,
                 Buffer.from(
                   JSON.stringify({
                     ...data
@@ -84,7 +84,7 @@ app.post('/searchfile',(req, res)=>{
                 search_file:file_search
             }
             channel.sendToQueue(
-                'order',
+              queue,
                 Buffer.from(
                   JSON.stringify({
                     ...data

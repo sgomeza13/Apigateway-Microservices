@@ -8,6 +8,7 @@ dotenv.config();
 
 const conn_uri = process.env.AMQP_CONNECT;
 const file_path = process.env.file_path || 'testfiles';
+const queue = process.env.queue;
 
 
 let channel, connection
@@ -21,7 +22,7 @@ async function connect() {
     channel = await connection.createChannel()
 
     // consume all the orders that are not acknowledged
-    await channel.consume('order', (data) => {
+    await channel.consume(queue, (data) => {
       console.log(`Received ${Buffer.from(data.content)}`)
       const request = JSON.parse(`${Buffer.from(data.content)}`);
       //console.log(request.request_service);
