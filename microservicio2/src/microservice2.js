@@ -21,16 +21,15 @@ async function connect() {
     connection = await amqp.connect(amqpServer)
     channel = await connection.createChannel()
 
-    // consume all the orders that are not acknowledged
+    // Consume todas las request que no han recibido ack
     await channel.consume(queue, (data) => {
       console.log(`Received ${Buffer.from(data.content)}`)
       const request = JSON.parse(`${Buffer.from(data.content)}`);
-      //console.log(request.request_service);
-      if(request.request_service == 1){
+      if(request.request_service == 1){             //listfiles
        const response = fs.readdirSync(file_path);
        console.log(response);
       }
-      else{
+      else{                                         //searchFiles
         const file_name = request.search_file;
         const found =  globSync(`${file_path}/${file_name}`)
         console.log(found);

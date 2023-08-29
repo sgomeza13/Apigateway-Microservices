@@ -94,7 +94,7 @@ app.post('/searchfile',(req, res)=>{
                   }),
                 ),
               )
-            res.send("sent to MoM")
+            res.send("grpc caido, enviado a la cola")
     
 
            }

@@ -26,14 +26,14 @@ const searchR = (call, callback) => {
     const request_service = call.request;
     console.log(request_service);
     let response = {}
-    if(request_service.request_service == 1){
+    if(request_service.request_service == 1){ //Si el request es 1, es listfiles
          response = {
             response: fs.readdirSync(file_path)
         };
     }
-    else{
+    else{               //Si no, es  searchfile
         const file_name = request_service.file_search;
-        const found =  globSync(`${file_path}/${file_name}`)
+        const found =  globSync(`${file_path}/${file_name}`) //La libreria glob se encarga de la busqueda con woldcards
         if(found != ''){
         response = {
             response: found
@@ -50,6 +50,7 @@ const searchR = (call, callback) => {
     callback(null,response);
 };
 
+//Gestion de conexion
 server.addService(SearchRequest.service, { SearchR: searchR });
 server.bindAsync(REMOTE_HOST, grpc.ServerCredentials.createInsecure(), (err, port) => {
     if (err) {
