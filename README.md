@@ -57,7 +57,7 @@ La aplicacion de express corre en el puerto 3000, el de grpc en el puerto 8000 y
 ## opcional - detalles de la organización del código por carpetas o descripción de algún archivo. (ESTRUCTURA DE DIRECTORIOS Y ARCHIVOS IMPORTANTE DEL PROYECTO, comando 'tree' de linux)
 Cada servicio esta separado en carpetas idependientes, cada uno tiene sus propias dependencias y variables de entorno
 
-![Alt text](image-5.png)
+![Alt text](image-6.png)
 ## 
 ## opcionalmente - si quiere mostrar resultados o pantallazos 
 **listfiles grpc**
