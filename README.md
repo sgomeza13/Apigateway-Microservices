@@ -85,7 +85,7 @@ Y su body debe ser un JSON de la siguiente forma:
 {
     "file":"nombre_del_archivo.ejemplo"
 }
-
+**NOTA** si se mata el proceso de microservicio1 y se vuelve a iniciar, hay que darle unos segundos (un poco mas de 10 segundos) para vuelva a estar disponible
 
 # referencias:
 <debemos siempre reconocer los créditos de partes del código que reutilizaremos, así como referencias a youtube, o referencias bibliográficas utilizadas para desarrollar el proyecto o la actividad>
