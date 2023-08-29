@@ -1,7 +1,7 @@
 import amqp from "amqplib";
 import fs from 'fs';
 import dotenv from 'dotenv';
-import { glob, globSync, globStream, globStreamSync, Glob } from 'glob'
+import { globSync } from 'glob'
 
 dotenv.config();
 

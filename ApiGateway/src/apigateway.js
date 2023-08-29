@@ -6,8 +6,12 @@ import amqp from 'amqplib'
 
 dotenv.config();
 
-//Definicionn de constantes para gRPC
+
 const app = express();
+app.use(express.json());
+app.use(express.urlencoded());
+
+//Definicionn de constantes para gRPC
 const port = process.env.PORT;
 const PROTO_PATH = process.env.PROTO_PATH;
 const REMOTE_HOST = process.env.REMOTE_HOST;
@@ -25,20 +29,19 @@ const packageDefinition = protoLoader.loadSync(
     });
 
 
-app.use(express.json());
-app.use(express.urlencoded());
 
-const SearchRequest = grpc.loadPackageDefinition(packageDefinition).SearchRequest;
+
+const SearchRequest = grpc.loadPackageDefinition(packageDefinition).SearchRequest; //Carga definicion del proto
 
 let request_service;
 let file_search;
 
 
-//Defininos y conectamos a rabbitmq
+
 let channel, connection
 connect()
 
-
+//Define la ruta listfiles, tiene como respuesta la lista de todos los archivos de la carpeta predeterminada (testfiles)
 app.get('/listfiles',( req, res)=> {
         let client = new SearchRequest(REMOTE_HOST, grpc.credentials.createInsecure());
         console.info("Consumer service is started...");
@@ -46,7 +49,7 @@ app.get('/listfiles',( req, res)=> {
         
         client.SearchR({request_service:request_service},(err,data) => {
 
-           if(err){
+           if(err){                   //Si no se puede conectar por grpc, manda la request a la cola de rabbitmq
             const data = {
                 request_service:1,
                 search_file:""
@@ -59,19 +62,19 @@ app.get('/listfiles',( req, res)=> {
                   }),
                 ),
               )
-            res.send("sent to MoM")
+            res.send("grpc caido, enviado a la cola")
     
 
            }
            else{
             
-                res.send(data)
+                res.send(data)  
            }
         });
     
 
 })
-
+//Define la ruta de buscar archivos, debe tener en e parametro un JSON con "file":"nombre_del_archivo.example"
 app.post('/searchfile',(req, res)=>{
     let client = new SearchRequest(REMOTE_HOST, grpc.credentials.createInsecure());
     console.info("Consumer service is started...");
@@ -106,15 +109,14 @@ app.post('/searchfile',(req, res)=>{
 
 
 
-// connect to rabbitmq
+// funcion para establecer conexion rabbitmq
 async function connect() {
     try {
-        // rabbitmq default port is 5672
       const amqpServer = conn_uri
       connection = await amqp.connect(amqpServer)
       channel = await connection.createChannel()
   
-      // make sure that the order channel is created, if not this statement will create it
+      // Se asegura de que la cola existe, sino, la crea
       await channel.assertQueue(queue)
     } catch (error) {
       console.log(error)

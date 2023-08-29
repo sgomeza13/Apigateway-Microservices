@@ -2,7 +2,7 @@ import dotenv from 'dotenv';
 import grpc from '@grpc/grpc-js';
 import protoLoader from '@grpc/proto-loader';
 import fs from 'fs';
-import { glob, globSync, globStream, globStreamSync, Glob } from 'glob'
+import {globSync} from 'glob'
 
 dotenv.config();
 const server = new grpc.Server();
