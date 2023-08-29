@@ -44,7 +44,7 @@ connect()
 //Define la ruta listfiles, tiene como respuesta la lista de todos los archivos de la carpeta predeterminada (testfiles)
 app.get('/listfiles',( req, res)=> {
         let client = new SearchRequest(REMOTE_HOST, grpc.credentials.createInsecure());
-        console.info("Consumer service is started...");
+        console.info("apigateway/listfiles service is started...");
         request_service = 1;
         
         client.SearchR({request_service:request_service},(err,data) => {
@@ -77,7 +77,7 @@ app.get('/listfiles',( req, res)=> {
 //Define la ruta de buscar archivos, debe tener en e parametro un JSON con "file":"nombre_del_archivo.example"
 app.post('/searchfile',(req, res)=>{
     let client = new SearchRequest(REMOTE_HOST, grpc.credentials.createInsecure());
-    console.info("Consumer service is started...");
+    console.info("apigateway/searchfile service is started...");
     request_service = 2;
     file_search = req.body.file;
     client.SearchR({request_service:request_service, file_search:file_search},(err,data) => {
