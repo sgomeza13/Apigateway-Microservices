@@ -107,6 +107,27 @@ app.post('/searchfile',(req, res)=>{
     
 })
 
+app.post('lostRequests/',async (req,res)=>{
+  try{
+  let channel = await connection.createChannel();
+  await channel.assertQueue('cola_request_perdidos');
+  const data = {
+    "hello":"world"
+  }
+  channel.sendToQueue(
+    queue,
+      Buffer.from(
+        JSON.stringify({
+          ...data
+        }),
+      ),
+    )
+  }
+  catch(error){
+
+  }
+})
+
 
 
 // funcion para establecer conexion rabbitmq
