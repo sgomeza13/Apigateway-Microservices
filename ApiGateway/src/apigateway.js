@@ -107,7 +107,7 @@ app.post('/searchfile',(req, res)=>{
     
 })
 
-app.get('lostrequests/',async (req,res)=>{
+app.get('/lostrequests',async (req,res)=>{
   console.log("testt");
   let channel = await connection.createChannel();
   await channel.assertQueue('cola_request_perdidos');
