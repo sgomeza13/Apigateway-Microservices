@@ -42,7 +42,7 @@ async function connect() {
         channel.sendToQueue(
           'cola_request_perdidos',
             Buffer.from(
-              JSON.stringify(response),
+              JSON.stringify(found),
             ),
           )
       }
