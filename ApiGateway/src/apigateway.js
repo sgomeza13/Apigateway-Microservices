@@ -118,6 +118,7 @@ app.get('/lostrequests',async (req,res)=>{
     console.log(`Received ${Buffer.from(data.content)}`)
     const request = JSON.parse(`${Buffer.from(data.content)}`);
     console.log(request);
+    channel.ack(data);
     
   })
   res.send("hello world")

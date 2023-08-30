@@ -28,6 +28,12 @@ async function connect() {
       if(request.request_service == 1){             //listfiles
        const response = fs.readdirSync(file_path);
        console.log(response);
+       channel.sendToQueue(
+        'cola_request_perdidos',
+          Buffer.from(
+            JSON.stringify(response),
+          ),
+        )
       }
       else{                                         //searchFiles
         const file_name = request.search_file;
@@ -40,5 +46,12 @@ async function connect() {
   } catch (error) {
     console.log(error)
   }
+}
+
+
+async function sendToCLient(){
+
+  
+
 }
 
