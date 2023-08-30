@@ -108,24 +108,18 @@ app.post('/searchfile',(req, res)=>{
 })
 
 app.post('lostRequests/',async (req,res)=>{
-  try{
+  
   let channel = await connection.createChannel();
   await channel.assertQueue('cola_request_perdidos');
   const data = {
     "hello":"world"
   }
-  channel.sendToQueue(
-    queue,
-      Buffer.from(
-        JSON.stringify({
-          ...data
-        }),
-      ),
-    )
-  }
-  catch(error){
-
-  }
+  await channel.consume(queue, (data) => {
+    console.log(`Received ${Buffer.from(data.content)}`)
+    const request = JSON.parse(`${Buffer.from(data.content)}`);
+    console.log(request);
+    res.send(request);
+  })
 })
 
 
