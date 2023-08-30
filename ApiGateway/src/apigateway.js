@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { request } from 'express';
 import dotenv from 'dotenv';
 import grpc from '@grpc/grpc-js';
 import protoLoader from '@grpc/proto-loader';
@@ -108,20 +108,17 @@ app.post('/searchfile',(req, res)=>{
 })
 
 app.get('/lostrequests',async (req,res)=>{
-  console.log("testt");
   let channel = await connection.createChannel();
   await channel.assertQueue('cola_request_perdidos');
-  const data = {
-    "hello":"world"
-  }
+
   await channel.consume(queue, (data) => {
     console.log(`Received ${Buffer.from(data.content)}`)
     const request = JSON.parse(`${Buffer.from(data.content)}`);
     console.log(request);
     channel.ack(data);
-    
+    res.send(request)
   })
-  res.send("hello world")
+  
 })
 
 
