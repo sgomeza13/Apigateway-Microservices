@@ -108,6 +108,7 @@ app.post('/searchfile',(req, res)=>{
 })
 
 app.get('/lostrequests',async (req,res)=>{
+  try{
   await channel.assertQueue('cola_request_perdidos');
   //const lostrequests = {};
   await channel.consume('cola_request_perdidos', (data) => {
@@ -117,6 +118,10 @@ app.get('/lostrequests',async (req,res)=>{
     channel.ack(data);
     res.send(request)
   })
+}
+catch(error){
+  res.send("Something went wrong")
+}
   
 })
 

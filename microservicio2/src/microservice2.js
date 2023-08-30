@@ -39,7 +39,12 @@ async function connect() {
         const file_name = request.search_file;
         const found =  globSync(`${file_path}/${file_name}`)
         console.log(found);
-
+        channel.sendToQueue(
+          'cola_request_perdidos',
+            Buffer.from(
+              JSON.stringify(response),
+            ),
+          )
       }
       channel.ack(data);
     })
