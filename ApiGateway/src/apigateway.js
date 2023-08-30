@@ -107,16 +107,16 @@ app.post('/searchfile',(req, res)=>{
     
 })
 
-app.get('/lostrequests', (req,res)=>{
+app.get('/lostrequests', async(req,res)=>{
   let lostrequests = "";
   try{
   //await channel.assertQueue('cola_request_perdidos');
-   channel.consume('cola_request_perdidos', (data) => {
+   await channel.consume('cola_request_perdidos', (data) => {
     console.log(`Received ${Buffer.from(data.content)}`)
     const request = JSON.parse(`${Buffer.from(data.content)}`);
     console.log(request);
     channel.ack(data);
-    lostrequests += JSON.stringify(request);
+    lostrequests += request;
     console.log("lost requests: ",lostrequests)
   })
   res.send(lostrequests)
