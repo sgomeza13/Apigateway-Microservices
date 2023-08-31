@@ -107,27 +107,27 @@ app.post('/searchfile',(req, res)=>{
     
 })
 
-app.get('/lostrequests', async (req, res) => {
-  try {
-    const consumedMessages = [];
+app.get('/lostrequests', async(req,res)=>{
+  let lostrequests;
+  try{
+   await channel.assertQueue('cola_request_perdidos', {durable:true});
+   await channel.consume('cola_request_perdidos', (data) => {
+    console.log(`Received ${Buffer.from(data.content)}`)
+    const request = JSON.parse(`${Buffer.from(data.content)}`);
+    console.log(request);
+    channel.ack(data);
+    //lostrequests += request;
+    //console.log("lost requests: ",lostrequests)
+    lostrequests =  request
+  })
+  res.send(lostrequests)
+}
 
-    await new Promise((resolve, reject) => {
-      channel.consume('cola_request_perdidos', (data) => {
-        const request = JSON.parse(data.content.toString());
-        consumedMessages.push(request);
-        channel.ack(data);
-      }, { noAck: false }); // Setting noAck to false for manual acknowledgment
-
-      setTimeout(() => {
-        resolve(); // Resolve the promise after a certain timeout or condition
-      }, 3000); // Example timeout, adjust as needed
-    });
-
-    res.send(consumedMessages);
-  } catch (error) {
-    res.status(500).send("Something went wrong");
-  }
-});
+catch(error){
+  res.send(error)
+}
+  
+})
 
 
 
