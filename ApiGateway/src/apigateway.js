@@ -114,8 +114,9 @@ app.get('/lostrequests', async(req,res)=>{
     const request = JSON.parse(`${Buffer.from(data.content)}`);
     console.log(request);
     channel.ack(data);
+    res.send(request)
   })
-  res.send(request)
+  
 }
 
 catch(error){
