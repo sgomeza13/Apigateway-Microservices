@@ -127,7 +127,8 @@ app.get('/lostrequests', async (req, res) => {
 
     const messages = await consumePromise;
     lostrequests = messages.join(', '); // Join the messages as a string if needed
-    
+    console.log(messages);
+    console.log(lostrequests);
     res.send(lostrequests);
   } catch (error) {
     console.error(error);
