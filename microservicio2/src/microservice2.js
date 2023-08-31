@@ -25,13 +25,17 @@ async function connect() {
     await channel.consume(queue, (data) => {
       console.log(`Received ${Buffer.from(data.content)}`)
       const request = JSON.parse(`${Buffer.from(data.content)}`);
+      const result = {
+        "req":request
+      }
       if(request.request_service == 1){             //listfiles
        const response = fs.readdirSync(file_path);
        console.log(response);
+       result['response'] = response;
        channel.sendToQueue(
         'cola_request_perdidos',
           Buffer.from(
-            response,
+            result,
           ),
         )
       }
