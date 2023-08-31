@@ -107,20 +107,20 @@ app.post('/searchfile',(req, res)=>{
     
 })
 
-app.get('/lostrequests', async(req,res)=>{
+app.get('/lostrequests', function(req,res){
   let lostrequests;
   try{
   //await channel.assertQueue('cola_request_perdidos');
-   await channel.consume('cola_request_perdidos', async(data) => {
+    channel.consume('cola_request_perdidos',async function (data){ 
     console.log(`Received ${Buffer.from(data.content)}`)
     const request = JSON.parse(`${Buffer.from(data.content)}`);
     console.log(request);
-    channel.ack(data);
+    const test = await channel.ack(data);
     //lostrequests += request;
     //console.log("lost requests: ",lostrequests)
-    lostrequests = await request
-  })
- await res.send(lostrequests)
+    lostrequests =  request
+    });
+  res.send(lostrequests)
 }
 
 catch(error){
