@@ -32,11 +32,11 @@ async function connect() {
        const response = fs.readdirSync(file_path);
        console.log(response);
        result['response'] = response
-       
+
        channel.sendToQueue(
         'cola_request_perdidos',
           Buffer.from(
-            JSON.stringify(response),
+            JSON.stringify(result),
           ),
         )
       }

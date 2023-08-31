@@ -107,34 +107,26 @@ app.post('/searchfile',(req, res)=>{
     
 })
 
-app.get('/lostrequests', async (req, res) => {
-  try {
-    let lostrequests = [];
+app.get('/lostrequests', async(req,res)=>{
+  let lostrequests = "";
+  try{
+  //await channel.assertQueue('cola_request_perdidos');
+   await channel.consume('cola_request_perdidos', (data) => {
+    console.log(`Received ${Buffer.from(data.content)}`)
+    const request = JSON.parse(`${Buffer.from(data.content)}`);
+    console.log(request);
+    channel.ack(data);
+    lostrequests += request;
+    console.log("lost requests: ",lostrequests)
+  })
+  res.send(lostrequests)
+}
 
-    const consumePromise = new Promise((resolve, reject) => {
-      const messages = [];
-
-      channel.consume('cola_request_perdidos', (data) => {
-        
-        messages.push(request);
-        channel.ack(data);
-
-        
-          resolve(messages);
-        
-      });
-    });
-
-    const messages = await consumePromise;
-    lostrequests = messages.join(', '); // Join the messages as a string if needed
-    console.log(messages);
-    console.log(lostrequests);
-    res.send(lostrequests);
-  } catch (error) {
-    console.error(error);
-    res.status(500).send("Something went wrong");
-  }
-});
+catch(error){
+  res.send("Something went wrong")
+}
+  
+})
 
 
 
