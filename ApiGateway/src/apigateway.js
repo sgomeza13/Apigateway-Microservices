@@ -116,8 +116,8 @@ app.get('/lostrequests', async(req,res)=>{
     const request = JSON.parse(`${Buffer.from(data.content)}`);
     console.log(request);
     channel.ack(data);
-    lostrequests += request;
-    console.log("lost requests: ",lostrequests)
+    //lostrequests += request;
+    //console.log("lost requests: ",lostrequests)
   })
   res.send(request)
 }
