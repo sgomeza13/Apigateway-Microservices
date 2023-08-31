@@ -119,7 +119,7 @@ app.get('/lostrequests', async (req, res) => {
         messages.push(request);
         channel.ack(data);
 
-        if (messages.length === expectedMessageCount) {
+        if (messages.length === 1) {
           resolve(messages);
         }
       });
