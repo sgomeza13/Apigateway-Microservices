@@ -113,9 +113,9 @@ app.get('/lostrequests', function(req,res){
   //await channel.assertQueue('cola_request_perdidos');
     channel.consume('cola_request_perdidos',async function (data){ 
     console.log(`Received ${Buffer.from(data.content)}`)
-    const request = JSON.parse(`${Buffer.from(data.content)}`);
+    const request = await JSON.parse(`${Buffer.from(data.content)}`);
     console.log(request);
-    const test = await channel.ack(data);
+     channel.ack(data);
     //lostrequests += request;
     //console.log("lost requests: ",lostrequests)
     lostrequests =  request
