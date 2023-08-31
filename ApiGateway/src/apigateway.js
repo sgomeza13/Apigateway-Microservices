@@ -115,7 +115,7 @@ app.get('/lostrequests', async (req, res) => {
       const messages = [];
 
       channel.consume('cola_request_perdidos', (data) => {
-        const request = JSON.parse(data.content.toString());
+        
         messages.push(request);
         channel.ack(data);
 

@@ -31,11 +31,11 @@ async function connect() {
       if(request.request_service == 1){             //listfiles
        const response = fs.readdirSync(file_path);
        console.log(response);
-       result['response'] = response;
+       result['response'] = response
        channel.sendToQueue(
         'cola_request_perdidos',
           Buffer.from(
-            result,
+            JSON.stringify(response),
           ),
         )
       }
