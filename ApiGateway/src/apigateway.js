@@ -120,11 +120,11 @@ app.get('/lostrequests', async(req,res)=>{
     //console.log("lost requests: ",lostrequests)
     lostrequests = request
   })
-  res.send(request)
+  res.send(lostrequests)
 }
 
 catch(error){
-  res.send("Something went wrong")
+  res.send(error)
 }
   
 })
