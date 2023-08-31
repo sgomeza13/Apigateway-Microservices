@@ -118,7 +118,7 @@ app.get('/lostrequests', async(req,res)=>{
     channel.ack(data);
     //lostrequests += request;
     //console.log("lost requests: ",lostrequests)
-    lostrequests =  request
+    lostrequests = await request
   })
  await res.send(lostrequests)
 }
