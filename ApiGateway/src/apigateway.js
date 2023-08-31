@@ -108,7 +108,7 @@ app.post('/searchfile',(req, res)=>{
 })
 
 app.get('/lostrequests', async(req,res)=>{
-  let lostrequests = "";
+  let lostrequests;
   try{
   //await channel.assertQueue('cola_request_perdidos');
    await channel.consume('cola_request_perdidos', (data) => {
@@ -116,7 +116,7 @@ app.get('/lostrequests', async(req,res)=>{
     const request = JSON.parse(`${Buffer.from(data.content)}`);
     console.log(request);
     channel.ack(data);
-    lostrequests += request;
+    lostrequests = request;
     console.log("lost requests: ",lostrequests)
   })
   res.send(lostrequests)
